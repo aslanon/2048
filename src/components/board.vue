@@ -8,12 +8,13 @@
       <div>
         <button @click="createNewGame()" class="btn blue">New game</button>
       </div>
+      {{board}}
       <div class="board">
         <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
           <span
             class="tile"
             :value="item"
-            :class="{'isChanged': pastBoard[rIndex][cIndex] !== item}"
+            :class="{'isChanged': pastBoard[rIndex][cIndex] !== item && item != 0}"
             v-for="(item, cIndex) in row"
             :key="cIndex+'col'"
           >{{item != 0 ? item : null}}</span>
