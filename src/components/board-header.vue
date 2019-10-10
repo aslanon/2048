@@ -1,7 +1,7 @@
 <template>
   <div class="header grid grid-row gap-l">
     <div class="header-score ai-fe">
-      <h1>{{title}}</h1>
+      <h1>2048</h1>
       <span class="game-score grid grid-col c2">
         <span class="left">
           <h5>score</h5>
@@ -17,6 +17,7 @@
       <p v-if="targetTile <= 2048">Join the numbers and get to the {{targetTile}} tile!</p>
       <p v-if="targetTile == 4096">You next goal is to get to the {{targetTile * 2}} tile!</p>
     </div>
+    <button @click="$emit('new')" class="btn blue">New game</button>
   </div>
 </template>
 
@@ -24,7 +25,6 @@
 export default {
   name: "BoardHeader",
   props: {
-    title: String,
     scores: Object,
     targetTile: {
       type: Number,

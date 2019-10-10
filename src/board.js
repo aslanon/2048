@@ -59,6 +59,12 @@ function Board(opt) {
     this.targetTile = state;
   };
 
+  Board.prototype.init = () => {
+    this.grid = this.createGrid();
+    this.addNumber();
+    this.addNumber();
+  };
+
   // add random number to board
   Board.prototype.addNumber = () => {
     this.getEmptyPosition();

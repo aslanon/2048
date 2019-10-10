@@ -2,14 +2,15 @@
   <div class="grid">
     <div class="grid game-grid">
       <board-header
+        @new="createNewGame()"
         :currentTile="game.currentTile"
         :targetTile="game.targetTile"
-        :title="title"
         :scores="game.score"
       ></board-header>
-      <button @click="createNewGame()" class="btn blue">New game</button>
       <div class="board">
-        <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
+        <board-cell></board-cell>
+
+        <div class="board-row" v-for="(row, rIndex) in game.grid" :key="rIndex+'row'">
           <board-tile :tile="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></board-tile>
         </div>
       </div>
@@ -27,13 +28,17 @@
 
 <script>
 import BoardHeader from "./board-header.vue";
+import BoardCell from "./board-cell.vue";
 import BoardTile from "./board-tile.vue";
 import ConfirmPopup from "./confirm-popup.vue";
+
 import { Board, options } from "../board";
+
 export default {
   name: "Board",
   components: {
     BoardHeader,
+    BoardCell,
     BoardTile,
     ConfirmPopup
   },
@@ -41,9 +46,6 @@ export default {
     return {
       isOverlay: false,
       game: null,
-      title: "2048",
-      board: [],
-      pastBoard: [],
       confirm: {
         type: "win", // or end
         message: null,
@@ -58,18 +60,10 @@ export default {
   methods: {
     createNewGame() {
       this.game = new Board(options);
-      this.game.grid = this.game.createGrid();
-      this.game.pastGrid = this.game.copy(this.game.grid);
-      this.game.addNumber();
-      this.game.addNumber();
-      this.board = this.game.grid;
-      this.pastBoard = this.game.pastGrid;
+      this.game.init();
     },
     captureKey(e) {
       this.game.keyPressed(e);
-      this.pastBoard = Object.assign([], this.game.pastGrid);
-      this.board = Object.assign([], this.game.grid);
-
       this.controllerTarget();
       this.controllerGameover();
     },
@@ -129,7 +123,7 @@ export default {
   grid-template-rows: 1fr;
   grid-row-gap: 2rem;
   width: 100%;
-  max-width: 600px;
+  max-width: var(--contianer);
   h1 {
     text-align: left;
     max-width: max-content;
@@ -138,6 +132,7 @@ export default {
 
 .board {
   width: 100%;
+  max-width: var(--contianer);
   height: max-content;
   padding: 5px;
   background-color: #baa;
