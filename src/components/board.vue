@@ -8,10 +8,14 @@
         :scores="game.score"
       ></board-header>
       <div class="board">
-        <board-cell></board-cell>
-
-        <div class="board-row" v-for="(row, rIndex) in game.grid" :key="rIndex+'row'">
-          <board-tile :tile="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></board-tile>
+        <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
+          <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell>
+          <board-tile
+            :position="{row:rIndex, col:cIndex}"
+            :tile="item"
+            v-for="(item, cIndex) in row"
+            :key="cIndex+'col'"
+          ></board-tile>
         </div>
       </div>
       <p class="text-container-x">HOW TO PLAY: Use your arrow keys to move the tiles.</p>
@@ -46,6 +50,8 @@ export default {
     return {
       isOverlay: false,
       game: null,
+      board: [],
+      pastBoard: [],
       confirm: {
         type: "win", // or end
         message: null,
@@ -61,9 +67,14 @@ export default {
     createNewGame() {
       this.game = new Board(options);
       this.game.init();
+      this.board = this.game.grid;
+      this.pastBoard = this.game.pastGrid;
     },
     captureKey(e) {
       this.game.keyPressed(e);
+      this.pastBoard = Object.assign([], this.game.pastGrid);
+      this.board = Object.assign([], this.game.grid);
+
       this.controllerTarget();
       this.controllerGameover();
     },
@@ -123,7 +134,7 @@ export default {
   grid-template-rows: 1fr;
   grid-row-gap: 2rem;
   width: 100%;
-  max-width: var(--contianer);
+  max-width: var(--container);
   h1 {
     text-align: left;
     max-width: max-content;
@@ -132,7 +143,6 @@ export default {
 
 .board {
   width: 100%;
-  max-width: var(--contianer);
   height: max-content;
   padding: 5px;
   background-color: #baa;

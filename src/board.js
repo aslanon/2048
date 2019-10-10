@@ -14,8 +14,15 @@ function Board(opt) {
   this.isGameOver = false;
   this.isPlayed = true;
   this.score = {
+    added: 0,
     current: 0,
     best: localStorage.getItem("best") || 0
+  };
+
+  Board.prototype.init = () => {
+    this.grid = this.createGrid();
+    this.addNumber();
+    this.addNumber();
   };
 
   // board grid
@@ -57,12 +64,6 @@ function Board(opt) {
   };
   Board.prototype.setTargetTile = state => {
     this.targetTile = state;
-  };
-
-  Board.prototype.init = () => {
-    this.grid = this.createGrid();
-    this.addNumber();
-    this.addNumber();
   };
 
   // add random number to board
@@ -197,6 +198,7 @@ function Board(opt) {
         row[i] = a + b;
         row[i - 1] = 0;
         if (row[i] > this.currentTile) this.currentTile = row[i];
+        this.score.added = a + b;
         this.score.current += a + b;
         // break;
       }

@@ -8,11 +8,10 @@
   --gray-3: #757575;
   --color-1: #000;
   --color-2: #fff;
-  --container: 440px;
+  --container: 450px;
 }
 
 @import url("_transition.scss");
-@import url("_cell.scss");
 
 *,
 *:before,
