@@ -23,7 +23,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--color-1);
   margin-top: 60px;
 }
 
@@ -62,6 +62,12 @@ export default {
 .ai-center {
   align-items: center;
 }
+.ai-fs {
+  align-items: flex-start;
+}
+.ai-fe {
+  align-items: flex-end;
+}
 .jc-center {
   justify-content: center;
 }
@@ -70,25 +76,26 @@ export default {
   outline: none;
   border: 0;
   font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 1rem;
   height: 40px;
   width: 100%;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 5px #2a48ce;
-  transition: 0.21s ease;
+  box-shadow: 0 5px var(--blue-2);
+  transition: 1.21s ease;
   &:hover {
-    box-shadow: 0 5px #3150db;
+    box-shadow: 0 5px var(--blue-3);
   }
   &:active {
-    box-shadow: inset 0 3px 0px 1px #1a3cd2, 0 5px #3c60ff;
+    box-shadow: inset 0 3px 0px 1px var(--blue-2), 0 5px var(--blue);
   }
 }
 
 .btn {
   @extend %btn-style;
   &.blue {
-    background: rgb(60, 96, 255);
-    color: White;
+    background: var(--blue);
+    color: var(--color-2);
   }
 }
 </style>

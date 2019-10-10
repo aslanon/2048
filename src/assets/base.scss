@@ -1,3 +1,17 @@
+:root {
+  --background-color: #fff;
+  --blue: #3c60ff;
+  --blue-2: #2b4cdf;
+  --blue-3: #385af1;
+  --gray-1: #ececec;
+  --gray-2: #d1d1d1;
+  --gray-3: #757575;
+  --color-1: #000;
+  --color-2: #fff;
+}
+
+@import url("_transition.scss");
+
 *,
 *:before,
 *:after {
@@ -8,9 +22,12 @@
   -webkit-touch-callout: none;
   /* -webkit-font-smoothing: antialiased; */
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
 }
+
 body {
-  background: wheat;
+  background: var(--background-color);
   width: 100%;
   display: flex;
   align-items: center;

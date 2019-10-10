@@ -11,8 +11,8 @@ const randomFromList = list => {
  *
  * @param {Number} max
  */
-function random(max) {
-  return Math.floor(Math.random() * (max + 1));
+function random(min, max) {
+  return Math.floor(Math.random() * (max + 1 - min) - min);
 }
 
 export { random, randomFromList };
