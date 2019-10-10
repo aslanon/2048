@@ -22,7 +22,10 @@ function Board(opt) {
   this.state = opt.game.score;
   this.zeros = [];
   this.options = [];
-  this.direction = null;
+  this.flipped = false;
+  this.rotated = false;
+  this.played = false;
+  this.merged = false;
 
   // board grid
   Board.prototype.createGrid = () => {
@@ -40,6 +43,7 @@ function Board(opt) {
 
   // add random number to board
   Board.prototype.addNumber = () => {
+    this.options = [];
     for (let row = 0; row < this.row; row++) {
       for (let col = 0; col < this.col; col++) {
         if (this.grid[row][col] === 0) {
@@ -53,7 +57,6 @@ function Board(opt) {
     if (this.options.length > 0) {
       let position = randomFromList(this.options);
       let intRandom = Math.random(1);
-      console.log(position);
       this.grid[position.x][position.y] = intRandom > 0.5 ? 2 : 4;
     }
   };
@@ -89,47 +92,104 @@ function Board(opt) {
   };
 
   Board.prototype.keyPressed = e => {
-    console.log(e.keyCode, e.key);
-    let flipped = false;
-    let rotated = false;
     let key = e.keyCode;
-    this.pastGrid = this.copy(this.grid);
+    this.flipped = false;
+    this.rotated = false;
+    this.merged = false;
+    // this.pastGrid = this.copy(this.grid);
 
+    // if (key == 37) {
+    //   this.grid = this.flipGrid();
+    //   this.flipped = true;
+    // }
+    // if (key == 38) {
+    //   this.grid = this.rotateGrid();
+    //   this.grid = this.flipGrid();
+    //   this.rotated = true;
+    //   this.flipped = true;
+    // }
+    // if (key == 39) {
+    //   this.grid = this.flipGrid();
+    //   this.flipped = true;
+    // }
+    // if (key == 40) {
+    //   this.grid = this.rotateGrid();
+    //   this.rotated = true;
+    // }
+
+    // for (let i = 0; i < this.row; i++) {
+    //   this.grid[i] = this.operate(this.grid[i]);
+    // }
+
+    // let changed = this.compare(this.pastGrid, this.grid);
+
+    // if (this.flipped) {
+    //   this.grid = this.flipGrid();
+    // }
+    // if (this.rotated) {
+    //   this.grid = this.rotateGrid();
+    //   this.grid = this.rotateGrid();
+    //   this.grid = this.rotateGrid();
+    // }
+
+    // if (changed) this.addNumber();
+    // console.log(this.direction);
+
+    // right - left
     if (key == 37) {
-      this.flipGrid();
-      flipped = true;
+      this.grid = this.flipGrid();
+      this.flipped = true;
+    }
+    if (key == 39) {
+      // do nothing
     }
 
+    // up - down
     if (key == 38) {
-      this.rotateGrid();
-      rotated = true;
+      this.grid = this.rotateGrid();
+      this.grid = this.flipGrid();
+      this.rotated = true;
+      this.flipped = true;
+    }
+    if (key == 40) {
+      this.grid = this.rotateGrid();
+      this.rotated = true;
     }
 
     for (let i = 0; i < this.row; i++) {
       this.grid[i] = this.operate(this.grid[i]);
     }
+
+    if (this.flipped) this.grid = this.flipGrid();
+    if (this.rotated) {
+      this.grid = this.rotateGrid();
+      this.grid = this.rotateGrid();
+      this.grid = this.rotateGrid();
+    }
+
     let changed = this.compare(this.pastGrid, this.grid);
 
-    if (flipped) this.flipGrid();
-    if (rotated) this.rotateGrid();
     if (changed) this.addNumber();
+    console.log(this.direction);
   };
 
   Board.prototype.flipGrid = () => {
-    console.log("flip");
     for (let i = 0; i < this.row; i++) {
       this.grid[i].reverse();
     }
+    return this.grid;
   };
 
   Board.prototype.rotateGrid = () => {
-    console.log("rotate");
+    console.table(this.grid);
     let newGrid = this.createGrid();
     for (let i = 0; i < this.row; i++) {
       for (let j = 0; j < this.row; j++) {
         newGrid[i][j] = this.grid[j][i];
       }
     }
+    console.table(newGrid);
+    return newGrid;
   };
 
   Board.prototype.operate = row => {
@@ -149,6 +209,7 @@ function Board(opt) {
         // break;
       }
     }
+    this.merged = true;
     return row;
   };
 }

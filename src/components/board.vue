@@ -8,16 +8,9 @@
       <div>
         <button @click="createNewGame()" class="btn blue">New game</button>
       </div>
-      {{board}}
       <div class="board">
         <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
-          <span
-            class="tile"
-            :value="item"
-            :class="{'isChanged': pastBoard[rIndex][cIndex] !== item && item != 0}"
-            v-for="(item, cIndex) in row"
-            :key="cIndex+'col'"
-          >{{item != 0 ? item : null}}</span>
+          <tile :value="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></tile>
         </div>
       </div>
     </div>
@@ -25,9 +18,14 @@
 </template>
 
 <script>
+import Tile from "./tile.vue";
 import { Board, options } from "../board";
 export default {
   name: "Board",
+
+  components: {
+    Tile
+  },
   data() {
     return {
       game: null,
@@ -87,51 +85,6 @@ export default {
   border-radius: 7px;
   outline: none;
   position: relative;
-  .tile {
-    width: 100px;
-    height: 100px;
-    margin: 5px;
-    line-height: 90px;
-    display: inline-block;
-    font-size: 55px;
-    font-weight: 700;
-    text-align: center;
-    vertical-align: middle;
-    border-radius: 7px;
-    color: #766;
-    background-color: #dcb;
-    user-select: none;
-
-    &.isChanged {
-      animation: changed 0.25s ease both;
-    }
-
-    &[value="2"] {
-      background: white;
-    }
-    &[value="4"] {
-      background: #eec;
-    }
-    &[value="8"] {
-      background: #fb8;
-      color: white;
-    }
-    &[value="16"] {
-      background: #f96;
-      color: white;
-    }
-    &[value="32"] {
-      background: #ff864a;
-      color: white;
-    }
-    &[value="64"] {
-      background: #f53;
-      color: white;
-    }
-    &[value="128"] {
-      background: #ec7;
-    }
-  }
 }
 
 @keyframes changed {
