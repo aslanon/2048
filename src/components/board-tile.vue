@@ -1,35 +1,39 @@
 <template>
-  <span :class="classes" :value="tile">{{tile != 0 ? tile : null}}</span>
+  <span :class="classes" :value="tile.value">{{tile.value != 0 ? tile.value : null}}</span>
 </template>
 <script>
 export default {
   name: "BoardTile",
   props: {
     tile: {
-      type: Number,
-      default: 0
+      type: Object,
+      default: () => {}
     },
     position: {
+      type: Object,
+      default: () => {}
+    },
+    pastPosition: {
       type: Object,
       default: () => {}
     }
   },
   data() {
     return {
-      pastPosition: {
-        row: null,
-        col: null
-      },
       isMoved: false
     };
   },
-  // beforeUpdate() {
-  //   this.isMoved = true;
-  //   setTimeout(() => {
-  //     this.pastPosition = this.position;
-  //     this.isMoved = false;
-  //   }, 0);
-  // },
+  watch: {
+    tile: function(a, b) {
+      if (a != b) {
+        this.isMoved = true;
+        setTimeout(() => {
+          this.isMoved = false;
+        }, 100);
+      }
+    }
+  },
+
   computed: {
     classes() {
       var pos = this.position;

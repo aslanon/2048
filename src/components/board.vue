@@ -11,7 +11,8 @@
         <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
           <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell>
           <board-tile
-            :position="{row:rIndex, col:cIndex}"
+            :pastPosition="pastTiles[rIndex][cIndex].position"
+            :position="{row: rIndex, col:cIndex}"
             :tile="item"
             v-for="(item, cIndex) in row"
             :key="cIndex+'col'"
@@ -46,6 +47,26 @@ export default {
     BoardTile,
     ConfirmPopup
   },
+
+  computed: {
+    pastTiles() {
+      return this.pastBoard.map((arr, rowIndex) => {
+        return arr.map((item, colIndex) => {
+          if (this.board[rowIndex][colIndex] == item) {
+          }
+
+          return {
+            value: item,
+            position: {
+              row: rowIndex,
+              col: colIndex
+            }
+          };
+        });
+      });
+    }
+  },
+
   data() {
     return {
       isOverlay: false,

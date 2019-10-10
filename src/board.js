@@ -21,11 +21,12 @@ function Board(opt) {
 
   Board.prototype.init = () => {
     this.grid = this.createGrid();
+    this.pastGrid = this.copy(this.grid);
     this.addNumber();
     this.addNumber();
   };
 
-  // board grid
+  // create list grid
   Board.prototype.createGrid = () => {
     let arr = [];
     if (this.row == this.col) {
@@ -33,26 +34,27 @@ function Board(opt) {
       for (let i = 0; i < this.row; i++) {
         arr.push([]);
         for (let j = 0; j < this.row; j++) {
-          arr[i].push(0);
+          arr[i].push({ value: 0 });
         }
       }
       return arr;
     }
   };
 
+  // get empty cell position list
   Board.prototype.getEmptyPosition = () => {
-    this.emptyPositions = [];
+    let arr = [];
     for (let row = 0; row < this.row; row++) {
       for (let col = 0; col < this.col; col++) {
-        if (this.grid[row][col] === 0) {
-          this.emptyPositions.push({
+        if (this.grid[row][col].value === 0) {
+          arr.push({
             x: row,
             y: col
           });
         }
       }
     }
-    return this.emptyPositions;
+    return arr;
   };
 
   // state actions
@@ -68,11 +70,11 @@ function Board(opt) {
 
   // add random number to board
   Board.prototype.addNumber = () => {
-    this.getEmptyPosition();
+    this.emptyPositions = this.getEmptyPosition();
     if (this.emptyPositions.length > 0) {
       let pos = randomFromList(this.emptyPositions);
       let int = random(0, 1);
-      this.grid[pos.x][pos.y] = int > 0 ? 2 : 4;
+      this.grid[pos.x][pos.y].value = int > 0 ? 2 : 4;
     } else {
       // game over
       this.setGameover(true);
@@ -111,6 +113,23 @@ function Board(opt) {
     return false;
   };
 
+  Board.prototype.flipGrid = () => {
+    for (let i = 0; i < this.row; i++) {
+      this.grid[i].reverse();
+    }
+    return this.grid;
+  };
+
+  Board.prototype.rotateGrid = () => {
+    let newGrid = this.createGrid();
+    for (let i = 0; i < this.row; i++) {
+      for (let j = 0; j < this.row; j++) {
+        newGrid[i][j] = this.grid[j][i];
+      }
+    }
+    return newGrid;
+  };
+
   Board.prototype.keyPressed = e => {
     if (!this.isPlayed) return;
 
@@ -140,6 +159,7 @@ function Board(opt) {
     }
 
     this.pastGrid = this.copy(this.grid);
+
     for (let i = 0; i < this.row; i++) {
       this.grid[i] = this.operate(this.grid[i]);
     }
@@ -151,26 +171,7 @@ function Board(opt) {
       this.grid = this.rotateGrid();
     }
 
-    let changed = this.compare(this.pastGrid, this.grid);
-
-    if (changed) this.addNumber();
-  };
-
-  Board.prototype.flipGrid = () => {
-    for (let i = 0; i < this.row; i++) {
-      this.grid[i].reverse();
-    }
-    return this.grid;
-  };
-
-  Board.prototype.rotateGrid = () => {
-    let newGrid = this.createGrid();
-    for (let i = 0; i < this.row; i++) {
-      for (let j = 0; j < this.row; j++) {
-        newGrid[i][j] = this.grid[j][i];
-      }
-    }
-    return newGrid;
+    if (this.compare(this.pastGrid, this.grid)) this.addNumber();
   };
 
   Board.prototype.operate = row => {
@@ -182,22 +183,24 @@ function Board(opt) {
 
   // Todo
   Board.prototype.slide = row => {
-    let array = row.filter(item => item != 0);
+    let array = row.filter(item => item.value != 0);
     let missing = this.row - array.length;
     let zeros = Array(missing).fill(0); // [{value:0} x 4]
+    zeros = zeros.map(item => {
+      return { value: item };
+    });
     array = zeros.concat(array);
     return array;
   };
 
   Board.prototype.merge = row => {
     for (let i = this.row - 1; i >= 1; i--) {
-      let a = row[i];
-      let b = row[i - 1];
-
+      let a = row[i].value;
+      let b = row[i - 1].value;
       if (a == b && a != 0) {
-        row[i] = a + b;
-        row[i - 1] = 0;
-        if (row[i] > this.currentTile) this.currentTile = row[i];
+        row[i].value = a + b;
+        row[i - 1].value = 0;
+        if (row[i].value > this.currentTile) this.currentTile = row[i].value;
         this.score.added = a + b;
         this.score.current += a + b;
         // break;
