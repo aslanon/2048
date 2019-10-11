@@ -7,13 +7,13 @@ export default {
   props: {
     tile: {
       type: Object,
-      default: () => ({
+      default: {
         value: 0,
         isMerged: false,
         isMoved: false,
         col: 0,
         row: 0
-      })
+      }
     }
   },
   computed: {

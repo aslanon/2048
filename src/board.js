@@ -1,5 +1,10 @@
 import { random, randomFromList } from "./helpers";
 
+/**
+ * Board object
+ *
+ * @param {Object} opt
+ */
 function Board(opt) {
   this.row = opt.conf.row;
   this.col = opt.conf.col;
@@ -19,6 +24,9 @@ function Board(opt) {
     best: localStorage.getItem("best") || 0
   };
 
+  /**
+   * Create new board
+   */
   Board.prototype.init = () => {
     this.grid = this.createGrid();
     this.pastGrid = this.copy(this.grid);
@@ -26,7 +34,11 @@ function Board(opt) {
     this.addNumber();
   };
 
-  // create list grid
+  /**
+   * Make a grid.
+   * This func return new grid array and
+   * array size is coming from configure json
+   */
   Board.prototype.createGrid = () => {
     let arr = [];
     if (this.row == this.col) {
@@ -47,7 +59,10 @@ function Board(opt) {
     }
   };
 
-  // get empty cell position list
+  /**
+   * This function return empty position
+   * list array than created board
+   */
   Board.prototype.getEmptyPosition = () => {
     let arr = [];
     for (let row = 0; row < this.row; row++) {
@@ -74,7 +89,9 @@ function Board(opt) {
     this.targetTile = state;
   };
 
-  // add random number to board
+  /**
+   * Add random number into board
+   */
   Board.prototype.addNumber = () => {
     this.emptyPositions = this.getEmptyPosition();
     if (this.emptyPositions.length > 0) {
@@ -88,6 +105,10 @@ function Board(opt) {
     }
   };
 
+  /**
+   * When current score is biggest than best score,
+   * current score replace to best score
+   */
   Board.prototype.setBestScore = () => {
     if (!this.score.best) {
       this.score.best = this.score.current;
@@ -98,6 +119,10 @@ function Board(opt) {
     }
   };
 
+  /**
+   * Copy grid and return new array
+   * @param {Array} grid
+   */
   Board.prototype.copy = grid => {
     let newGrid = this.createGrid();
     for (let row = 0; row < this.row; row++) {
@@ -108,6 +133,9 @@ function Board(opt) {
     return newGrid;
   };
 
+  /**
+   * Filter
+   */
   Board.prototype.compare = (a, b) => {
     for (let row = 0; row < this.row; row++) {
       for (let col = 0; col < this.col; col++) {
@@ -119,6 +147,11 @@ function Board(opt) {
     return false;
   };
 
+  /**
+   * When user click to arrow right and left keys
+   * will called this function and that array row will
+   * reverse.
+   */
   Board.prototype.flipGrid = () => {
     for (let i = 0; i < this.row; i++) {
       this.grid[i].reverse();
@@ -126,6 +159,9 @@ function Board(opt) {
     return this.grid;
   };
 
+  /**
+   * Rotate grid row and col
+   */
   Board.prototype.rotateGrid = () => {
     let newGrid = this.createGrid();
     for (let i = 0; i < this.row; i++) {
@@ -136,6 +172,10 @@ function Board(opt) {
     return newGrid;
   };
 
+  /**
+   * Capture arrow keys with this function
+   * and merge or slide tile in grid
+   */
   Board.prototype.keyPressed = e => {
     if (!this.isPlayed) return;
 
