@@ -1,4 +1,4 @@
 module.exports = {
-  // publicPath: "/"
-  publicPath: "2048"
+  publicPath: "/"
+  // publicPath: "2048"
 };
