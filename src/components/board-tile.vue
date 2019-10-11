@@ -1,5 +1,5 @@
 <template>
-  <span :class="classes" :value="tile.value">h{{tile.value != 0 ? tile.value : null}}</span>
+  <span :class="classes" :value="tile.value">{{tile.value != 0 ? tile.value : null}}</span>
 </template>
 <script>
 export default {
