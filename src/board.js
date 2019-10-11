@@ -34,7 +34,13 @@ function Board(opt) {
       for (let i = 0; i < this.row; i++) {
         arr.push([]);
         for (let j = 0; j < this.row; j++) {
-          arr[i].push({ value: 0 });
+          arr[i].push({
+            value: 0,
+            isMerged: false,
+            isMoved: false,
+            row: i,
+            col: j
+          });
         }
       }
       return arr;
@@ -134,6 +140,10 @@ function Board(opt) {
     if (!this.isPlayed) return;
 
     let key = e.keyCode;
+
+    let keys = [37, 38, 39, 40];
+    if (!keys.includes(key)) return;
+
     this.flipped = false;
     this.rotated = false;
 
@@ -161,7 +171,7 @@ function Board(opt) {
     this.pastGrid = this.copy(this.grid);
 
     for (let i = 0; i < this.row; i++) {
-      this.grid[i] = this.operate(this.grid[i]);
+      this.grid[i] = this.operate(this.grid[i], i);
     }
 
     if (this.flipped) this.grid = this.flipGrid();
@@ -174,40 +184,67 @@ function Board(opt) {
     if (this.compare(this.pastGrid, this.grid)) this.addNumber();
   };
 
-  Board.prototype.operate = row => {
-    row = this.slide(row);
-    row = this.merge(row);
-    row = this.slide(row);
+  Board.prototype.operate = (row, i) => {
+    row = this.slide(row, i);
+    row = this.merge(row, i);
+    row = this.slide(row, i);
     return row;
   };
 
-  // Todo
-  Board.prototype.slide = row => {
+  Board.prototype.slide = (row, rowIndex) => {
+    let past = row[rowIndex];
     let array = row.filter(item => item.value != 0);
     let missing = this.row - array.length;
     let zeros = Array(missing).fill(0); // [{value:0} x 4]
-    zeros = zeros.map(item => {
-      return { value: item };
+    zeros = zeros.map((item, index) => {
+      return {
+        value: item,
+        isMerged: false,
+        isMoved: false
+      };
     });
     array = zeros.concat(array);
+
     return array;
   };
 
-  Board.prototype.merge = row => {
+  Board.prototype.merge = (row, rowIndex) => {
     for (let i = this.row - 1; i >= 1; i--) {
       let a = row[i].value;
       let b = row[i - 1].value;
+
       if (a == b && a != 0) {
         row[i].value = a + b;
         row[i - 1].value = 0;
         if (row[i].value > this.currentTile) this.currentTile = row[i].value;
         this.score.added = a + b;
         this.score.current += a + b;
+        row[i].isMerged = true;
+        row[i].isMoved = true;
+        row[i].row = rowIndex;
+        row[i].col = i;
+        setTimeout(() => {
+          row[i].isMerged = false;
+          row[i].isMoved = false;
+        }, 500);
         // break;
       }
     }
+    // this.grid = this.setPosition(this.grid);
 
     return row;
+  };
+
+  Board.prototype.setPosition = function(array) {
+    array.forEach((row, rowIndex) => {
+      row.forEach((tile, colIndex) => {
+        tile.pastRow = tile.row;
+        tile.pastCol = tile.col;
+        tile.row = rowIndex;
+        tile.col = colIndex;
+      });
+    });
+    return array;
   };
 }
 

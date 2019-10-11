@@ -1,5 +1,5 @@
 <template>
-  <span :class="classes" :value="tile.value">{{tile.value != 0 ? tile.value : null}}</span>
+  <span :class="classes" :value="tile.value">h{{tile.value != 0 ? tile.value : null}}</span>
 </template>
 <script>
 export default {
@@ -7,51 +7,36 @@ export default {
   props: {
     tile: {
       type: Object,
-      default: () => {}
-    },
-    position: {
-      type: Object,
-      default: () => {}
-    },
-    pastPosition: {
-      type: Object,
-      default: () => {}
+      default: () => ({
+        value: 0,
+        isMerged: false,
+        isMoved: false,
+        col: 0,
+        row: 0
+      })
     }
   },
-  data() {
-    return {
-      isMoved: false
-    };
-  },
-  watch: {
-    tile: function(a, b) {
-      if (a != b) {
-        this.isMoved = true;
-        setTimeout(() => {
-          this.isMoved = false;
-        }, 100);
-      }
-    }
-  },
-
   computed: {
     classes() {
-      var pos = this.position;
       var classArray = ["tile"];
 
       classArray.push("absolute");
-      classArray.push("tile" + this.tile);
-      classArray.push("position_" + pos.row + "_" + pos.col);
+      classArray.push("tile" + this.tile.value);
+      classArray.push("position_" + this.tile.row + "_" + this.tile.col);
 
-      if (this.isMoved && this.tile != 0) {
-        classArray.push(
-          "row_from_" + this.pastPosition.row + "_to_" + this.position.row
-        );
-        classArray.push(
-          "column_from_" + this.pastPosition.col + "_to_" + this.position.col
-        );
-        classArray.push("isMoving");
+      if (this.tile.isMerged) {
+        classArray.push("isMerged");
       }
+
+      // if (this.tile.isMoved) {
+      //   classArray.push(
+      //     "row_from_" + this.tile.pastRow + "_to_" + this.tile.row
+      //   );
+      //   classArray.push(
+      //     "column_from_" + this.tile.pastCol + "_to_" + this.tile.col
+      //   );
+      //   classArray.push("isMoving");
+      // }
 
       return classArray.join(" ");
     }
@@ -60,6 +45,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.isMerged {
+  animation: changed 0.25s ease both;
+}
+@keyframes changed {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
 .tile {
   width: 100px;
   height: 100px;
@@ -138,68 +134,69 @@ export default {
     font-size: 35px;
   }
 }
-.absolute {
-  position: absolute;
-}
-@for $row from 0 through 3 {
-  @for $column from 0 through 3 {
-    .position_#{$row}_#{$column}:not(.isMoving) {
-      top: 110px * $row + 5px;
-      left: 110px * $column + 5px;
-    }
-  }
-}
-@for $fromRow from 0 through 3 {
-  @for $toRow from 0 through 3 {
-    $name: row_from_#{$fromRow}_to_#{$toRow};
+// .absolute {
+//   position: absolute;
+//   z-index: 9999;
+// }
+// @for $row from 0 through 3 {
+//   @for $column from 0 through 3 {
+//     .position_#{$row}_#{$column}:not(.isMoving) {
+//       top: 110px * $row + 5px;
+//       left: 110px * $column + 5px;
+//     }
+//   }
+// }
+// @for $fromRow from 0 through 3 {
+//   @for $toRow from 0 through 3 {
+//     $name: row_from_#{$fromRow}_to_#{$toRow};
 
-    @if $fromRow == $toRow {
-      .#{$name} {
-        top: 110px * $toRow + 5px;
-      }
-    } @else {
-      .#{$name} {
-        animation-duration: 0.2s;
-        animation-name: $name;
-        animation-fill-mode: forwards;
-      }
+//     @if $fromRow == $toRow {
+//       .#{$name} {
+//         top: 110px * $toRow + 5px;
+//       }
+//     } @else {
+//       .#{$name} {
+//         animation-duration: 0.2s;
+//         animation-name: $name;
+//         animation-fill-mode: forwards;
+//       }
 
-      @keyframes #{$name} {
-        from {
-          top: 110px * $fromRow + 5px;
-        }
-        to {
-          top: 110px * $toRow + 5px;
-        }
-      }
-    }
-  }
-}
+//       @keyframes #{$name} {
+//         from {
+//           top: 110px * $fromRow + 5px;
+//         }
+//         to {
+//           top: 110px * $toRow + 5px;
+//         }
+//       }
+//     }
+//   }
+// }
 
-@for $fromColumn from 0 through 3 {
-  @for $toColumn from 0 through 3 {
-    $name: column_from_#{$fromColumn}_to_#{$toColumn};
+// @for $fromColumn from 0 through 3 {
+//   @for $toColumn from 0 through 3 {
+//     $name: column_from_#{$fromColumn}_to_#{$toColumn};
 
-    @if $fromColumn == $toColumn {
-      .#{$name} {
-        left: 110px * $toColumn + 5px;
-      }
-    } @else {
-      .#{$name} {
-        animation-duration: 0.2s;
-        animation-name: $name;
-        animation-fill-mode: forwards;
-      }
+//     @if $fromColumn == $toColumn {
+//       .#{$name} {
+//         left: 110px * $toColumn + 5px;
+//       }
+//     } @else {
+//       .#{$name} {
+//         animation-duration: 0.2s;
+//         animation-name: $name;
+//         animation-fill-mode: forwards;
+//       }
 
-      @keyframes #{$name} {
-        from {
-          left: 110px * $fromColumn + 5px;
-        }
-        to {
-          left: 110px * $toColumn + 5px;
-        }
-      }
-    }
-  }
-}
+//       @keyframes #{$name} {
+//         from {
+//           left: 110px * $fromColumn + 5px;
+//         }
+//         to {
+//           left: 110px * $toColumn + 5px;
+//         }
+//       }
+//     }
+//   }
+// }
 </style>

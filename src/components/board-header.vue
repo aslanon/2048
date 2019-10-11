@@ -10,15 +10,21 @@
             <i v-if="isEffect" class="copied">+{{scores.added}}</i>
           </p>
         </span>
-        <span>
+        <span class="right">
           <h5>best</h5>
           <p>{{scores.best}}</p>
         </span>
       </span>
     </div>
     <div class="header-intro">
-      <p v-if="targetTile <= 2048">Join the numbers and get to the {{targetTile}} tile!</p>
-      <p v-if="targetTile == 4096">You next goal is to get to the {{targetTile * 2}} tile!</p>
+      <p
+        class="intro-text"
+        v-if="targetTile > currentTile"
+      >Join the numbers and get to the {{targetTile}} tile!</p>
+      <p
+        class="intro-text"
+        v-if="targetTile <= currentTile"
+      >You next goal is to get to the {{targetTile * 2}} tile!</p>
     </div>
     <button @click="$emit('new')" class="btn blue">New game</button>
   </div>
@@ -28,7 +34,14 @@
 export default {
   name: "BoardHeader",
   props: {
-    scores: Object,
+    scores: {
+      type: Object,
+      default: {
+        added: 0,
+        current: 0,
+        best: 0
+      }
+    },
     targetTile: {
       type: Number,
       default: 0

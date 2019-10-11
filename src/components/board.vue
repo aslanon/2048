@@ -9,14 +9,8 @@
       ></board-header>
       <div class="board">
         <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
-          <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell>
-          <board-tile
-            :pastPosition="pastTiles[rIndex][cIndex].position"
-            :position="{row: rIndex, col:cIndex}"
-            :tile="item"
-            v-for="(item, cIndex) in row"
-            :key="cIndex+'col'"
-          ></board-tile>
+          <!-- <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell> -->
+          <board-tile :tile="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></board-tile>
         </div>
       </div>
       <p class="text-container-x">HOW TO PLAY: Use your arrow keys to move the tiles.</p>
@@ -46,25 +40,6 @@ export default {
     BoardCell,
     BoardTile,
     ConfirmPopup
-  },
-
-  computed: {
-    pastTiles() {
-      return this.pastBoard.map((arr, rowIndex) => {
-        return arr.map((item, colIndex) => {
-          if (this.board[rowIndex][colIndex] == item) {
-          }
-
-          return {
-            value: item,
-            position: {
-              row: rowIndex,
-              col: colIndex
-            }
-          };
-        });
-      });
-    }
   },
 
   data() {
