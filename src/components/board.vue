@@ -1,28 +1,36 @@
 <template>
-  <div class="grid">
-    <div class="grid game-grid">
-      <board-header
-        @new="createNewGame()"
-        :currentTile="game.currentTile"
-        :targetTile="game.targetTile"
-        :scores="game.score"
-      ></board-header>
-      <div class="board">
-        <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
-          <!-- <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell> -->
-          <board-tile :tile="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></board-tile>
+  <v-touch
+    @swipeleft="captureSwipe('left')"
+    @swiperight="captureSwipe('right')"
+    @swipeup="captureSwipe('up')"
+    @swipedown="captureSwipe('down')"
+    class="touch-grid"
+  >
+    <div class="grid">
+      <div class="grid game-grid">
+        <board-header
+          @new="createNewGame()"
+          :currentTile="game.currentTile"
+          :targetTile="game.targetTile"
+          :scores="game.score"
+        ></board-header>
+        <div class="board">
+          <div class="board-row" v-for="(row, rIndex) in board" :key="rIndex+'row'">
+            <!-- <board-cell v-for="(item, indexCell) in row" :key="indexCell+'cell'"></board-cell> -->
+            <board-tile :tile="item" v-for="(item, cIndex) in row" :key="cIndex+'col'"></board-tile>
+          </div>
         </div>
+        <p class="text-container-x">HOW TO PLAY: Use your arrow keys to move the tiles.</p>
       </div>
-      <p class="text-container-x">HOW TO PLAY: Use your arrow keys to move the tiles.</p>
+      <confirm-popup
+        :message="confirm.message"
+        :button="confirm.button"
+        :isShow="isOverlay"
+        @save="saveConfirm"
+        @close="closeDialog"
+      ></confirm-popup>
     </div>
-    <confirm-popup
-      :message="confirm.message"
-      :button="confirm.button"
-      :isShow="isOverlay"
-      @save="saveConfirm"
-      @close="closeDialog"
-    ></confirm-popup>
-  </div>
+  </v-touch>
 </template>
 
 <script>
@@ -60,11 +68,20 @@ export default {
   },
 
   methods: {
+    doSomething() {
+      alert(2);
+    },
     createNewGame() {
       this.game = new Board(options);
       this.game.init();
       this.board = this.game.grid;
       this.pastBoard = this.game.pastGrid;
+    },
+    captureSwipe(direction) {
+      if (direction == "left") this.captureKey({ keyCode: 37 });
+      if (direction == "up") this.captureKey({ keyCode: 38 });
+      if (direction == "right") this.captureKey({ keyCode: 39 });
+      if (direction == "down") this.captureKey({ keyCode: 40 });
     },
     captureKey(e) {
       this.game.keyPressed(e);

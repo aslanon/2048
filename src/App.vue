@@ -27,9 +27,17 @@ export default {
   margin-top: 60px;
 }
 
+.touch-grid {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .grid {
   display: grid;
-  width: 100%;
+
   .grid-row {
     grid-template-rows: auto;
     &.gap-m {

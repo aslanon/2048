@@ -1,6 +1,13 @@
 # 2048
 
+Demo: https://aslanon.github.io/2048/
+
+![gif](https://media.giphy.com/media/mAJTIV0cw50FmOURTw/giphy.gif)
+
+
+
 ## Project setup
+
 ```
 npm install
 ```
